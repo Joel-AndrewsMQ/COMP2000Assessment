@@ -1,5 +1,4 @@
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class WeatherManager {
     private ArrayList<Weather> weatherList = new ArrayList<>();
@@ -59,22 +58,20 @@ public class WeatherManager {
         }
     }
 
-    public void advanceDecrement(Weather w) {
-        w.decrementDuration();
-    }
-
     public void update(ForestFireSimulation simulation) {
-        Iterator<Weather> it = weatherList.iterator();
+        weatherList.forEach(Weather::decrementDuration);
+        // Iterator<Weather> it = weatherList.iterator();
+        // while (it.hasNext()) {
+        //     Weather w = it.next();
+        //     advanceDecrement(w);
 
-        while (it.hasNext()) {
-            Weather w = it.next();
-            advanceDecrement(w);
-
-            if (!isActive(w)) {
-                it.remove();
-            } else {
-                w.affectSimulation(simulation);
-            }
-        }
+        weatherList.removeIf(w -> w.getDuration() <= 0);
+        //     if (!isActive(w)) {
+        //         it.remove();
+        //     } else {
+        weatherList.forEach(w -> w.affectSimulation(simulation));
+        //         w.affectSimulation(simulation);
+        //     }
+        // }
     }
 }
