@@ -1,5 +1,5 @@
 package Terrain;
-import Flammability.FlammableStrategy;
+import Terrain.Flammability.FlammableStrategy;
 
 public abstract class Terrain {
     public abstract void update();

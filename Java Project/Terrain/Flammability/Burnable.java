@@ -1,4 +1,4 @@
-package Flammability;
+package Terrain.Flammability;
 /**
  * Burnable
  */

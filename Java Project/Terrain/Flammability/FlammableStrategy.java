@@ -1,4 +1,4 @@
-package Flammability;
+package Terrain.Flammability;
 public abstract interface FlammableStrategy {
     default boolean canBurn(){
         return false;
