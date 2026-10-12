@@ -6,11 +6,8 @@ public class Rain extends Weather{
 
 	@Override
 	public void affectSimulation(ForestFireSimulation simulation){
-		for(int i = 0; i < location.length; i++){	
-				int row = location[i][0];
-				int column = location[i][1];
-
-		simulation.removeHeat(row, column, strength);
+		for(int[] cell : location){					
+		simulation.removeHeat(cell[0], cell[1], strength);
 	}		
 	}
 }

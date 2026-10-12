@@ -1,16 +1,13 @@
 public class Heatwave extends Weather {
 
-	Heatwave(int strength, int duration, int location[][]) {
+	public Heatwave(int strength, int duration, int[][] location) {
 		super(strength, duration, location);
 	}
 
 	@Override
 	public void affectSimulation(ForestFireSimulation simulation) {
-		for (int i = 0; i < location.length; i++) {
-			int row = location[i][0];
-			int column = location[i][1];
-
-			simulation.addHeat(row, column, strength);
+		for (int[] cell : location) {
+			simulation.addHeat(cell[0], cell[1], strength);
 		}
 	}
 }
