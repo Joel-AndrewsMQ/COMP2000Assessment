@@ -1,3 +1,6 @@
+package Weather;
+import Simulation.ForestFireSimulation;
+
 public class Lightning extends Weather{
 
 	private int strikesPerUpdate;

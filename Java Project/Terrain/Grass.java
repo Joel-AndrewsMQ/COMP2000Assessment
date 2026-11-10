@@ -1,3 +1,4 @@
+package Terrain;
 public class Grass extends Vegetation {
     private int density;
 

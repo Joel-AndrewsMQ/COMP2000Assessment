@@ -1,3 +1,4 @@
+package Simulation;
 public class Coordinate {
     //Helper class that contains two ints referring to a position in a two-dimensional grid.
     int x, y;

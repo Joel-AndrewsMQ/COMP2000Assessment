@@ -1,3 +1,4 @@
+package Simulation;
 import java.util.Random;
 import javax.swing.JButton;
 import javax.swing.JFrame;

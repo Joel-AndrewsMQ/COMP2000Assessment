@@ -1,4 +1,12 @@
+package Simulation;
 import java.util.Random;
+
+import Terrain.Grass;
+import Terrain.River;
+import Terrain.Terrain;
+import Terrain.Tree;
+import Terrain.Vegetation;
+import Weather.WeatherManager;
 
 public class ForestFireSimulation {
     private Grid<Cell> grid;

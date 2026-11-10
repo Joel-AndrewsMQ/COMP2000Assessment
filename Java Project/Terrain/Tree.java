@@ -1,3 +1,4 @@
+package Terrain;
 public class Tree extends Vegetation {
     private int height;
 

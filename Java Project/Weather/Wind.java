@@ -1,3 +1,6 @@
+package Weather;
+import Simulation.ForestFireSimulation;
+
 public class Wind extends Weather{
 
 	private int direction;

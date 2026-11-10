@@ -1,3 +1,4 @@
+package Terrain;
 public class Fire {
 
     private int intensity;

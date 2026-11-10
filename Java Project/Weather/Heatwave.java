@@ -1,3 +1,6 @@
+package Weather;
+import Simulation.ForestFireSimulation;
+
 public class Heatwave extends Weather {
 
 	Heatwave(int strength, int duration, int location[][]) {

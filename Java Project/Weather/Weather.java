@@ -1,3 +1,6 @@
+package Weather;
+import Simulation.ForestFireSimulation;
+
 public abstract class Weather{
 
 	protected int strength;

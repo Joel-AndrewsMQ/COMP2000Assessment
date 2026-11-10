@@ -1,4 +1,5 @@
-import Flammability.NonBurnable;
+package Terrain;
+import Terrain.Flammability.NonBurnable;
 
 public class River extends Terrain {
     private float coolingStrength;

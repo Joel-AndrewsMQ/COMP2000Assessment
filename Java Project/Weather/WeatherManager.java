@@ -1,5 +1,8 @@
+package Weather;
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import Simulation.ForestFireSimulation;
 
 public class WeatherManager {
     private ArrayList<Weather> weatherList = new ArrayList<>();

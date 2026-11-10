@@ -1,3 +1,7 @@
+package Simulation;
+import Terrain.Fire;
+import Terrain.Terrain;
+
 public class Cell {
     Terrain terrain;
     Fire fire;

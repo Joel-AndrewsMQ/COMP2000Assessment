@@ -1,4 +1,5 @@
-import Flammability.Burnable;
+package Terrain;
+import Terrain.Flammability.Burnable;
 
 public abstract class Vegetation extends Terrain{
     private int age;

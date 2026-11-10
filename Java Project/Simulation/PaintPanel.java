@@ -1,7 +1,13 @@
+package Simulation;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import javax.swing.JPanel;
+
+import Terrain.Grass;
+import Terrain.River;
+import Terrain.Terrain;
+import Terrain.Tree;
 
 //@SuppressWarnings({"serial", "this-escape"})
 public class PaintPanel extends JPanel {

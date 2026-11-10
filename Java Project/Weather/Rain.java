@@ -1,3 +1,6 @@
+package Weather;
+import Simulation.ForestFireSimulation;
+
 public class Rain extends Weather{
 
 	public Rain(int strength, int duration, int[][] location) {
