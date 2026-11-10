@@ -1,6 +1,8 @@
 package Simulation;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.stream.Stream.Builder;
 
 public class Grid<T> {
     private int rows;
@@ -132,5 +134,15 @@ public class Grid<T> {
         public int getColumn() {
             return column;
         }
+    }
+
+    public Stream<T> stream(){
+        Builder<T> builder = Stream.builder();
+        for (List<T> list : cells) {
+            for (T t : list) {
+                builder.accept(t);
+            }
+        }
+        return builder.build();
     }
 }
