@@ -1,4 +1,5 @@
 package Simulation;
+
 import java.util.Random;
 
 import Terrain.Grass;
@@ -29,44 +30,42 @@ public class ForestFireSimulation {
     }
 
     private void initializeGrid(Random random) {
-        for (int row = 0; row < grid.getRows(); row++) {
-            for (int column = 0; column < grid.getColumns(); column++) {
-                int terrainNumber = random.nextInt(100);
-                Terrain terrain;
+        grid.stream().forEachOrdered(c -> {
+            int terrainNumber = random.nextInt(100);
+            Terrain terrain;
 
-                if (terrainNumber < 60) {
-                    int age = random.nextInt(11);
-                    int height = 3 + random.nextInt(8);
-                    int fuel = 40 + random.nextInt(30);
-                    int burnRate = 2 + random.nextInt(4);
-                    float moisture = 0.3f + random.nextFloat() * 0.3f;
+            if (terrainNumber < 60) {
+                int age = random.nextInt(11);
+                int height = 3 + random.nextInt(8);
+                int fuel = 40 + random.nextInt(30);
+                int burnRate = 2 + random.nextInt(4);
+                float moisture = 0.3f + random.nextFloat() * 0.3f;
 
-                    terrain = new Tree(age, fuel, burnRate, moisture, height);
+                terrain = new Tree(age, fuel, burnRate, moisture, height);
 
-                } else if (terrainNumber < 90) {
-                    int age = random.nextInt(11);
-                    int density = 1 + random.nextInt(4);
-                    int fuel = 15 + random.nextInt(15);
-                    int burnRate = 4 + random.nextInt(3);
-                    float moisture = 0.1f + random.nextFloat() * 0.2f;
+            } else if (terrainNumber < 90) {
+                int age = random.nextInt(11);
+                int density = 1 + random.nextInt(4);
+                int fuel = 15 + random.nextInt(15);
+                int burnRate = 4 + random.nextInt(3);
+                float moisture = 0.1f + random.nextFloat() * 0.2f;
 
-                    terrain = new Grass(age, fuel, burnRate, moisture, density);
+                terrain = new Grass(age, fuel, burnRate, moisture, density);
 
-                } else {
-                    float coolingStrength = 0.1f + random.nextFloat() * 0.2f;
-                    terrain = new River(coolingStrength);
-                }
-
-                grid.setCell(row, column, new Cell(terrain));
+            } else {
+                float coolingStrength = 0.1f + random.nextFloat() * 0.2f;
+                terrain = new River(coolingStrength);
             }
-        }
+
+            grid.setCell(c.x, c.y, new Cell(terrain));
+        });
     }
 
     public Grid<Cell> getGrid() {
         return grid;
     }
 
-    public WeatherManager getWeatherManager(){
+    public WeatherManager getWeatherManager() {
         return this.weatherManager;
     }
 
@@ -127,145 +126,100 @@ public class ForestFireSimulation {
     }
 
     public void addWind(int direction, int strength) {
-        for(int row = 0; row < grid.getRows(); row++){
-            for (int column = 0; column < grid.getColumns(); column++){
-                Cell cell = grid.getCell(row, column);
-                if(cell.isBurning()){
-                    switch (direction) {
-                    //East
-                    case 1:    
-                    addHeat(row, column + 1, strength);
+        grid.stream().parallel().forEach(c -> {
+            if (c.value.isBurning()) {
+                switch (direction) {
+                    // East
+                    case 1:
+                        addHeat(c.x, c.y + 1, strength);
                         break;
-                
-                    //South
+
+                    // South
                     case 2:
-                        addHeat(row + 1, column, strength);
+                        addHeat(c.x + 1, c.y, strength);
                         break;
 
-                    //West
+                    // West
                     case 3:
-                        addHeat(row, column - 1, strength);
+                        addHeat(c.x, c.y - 1, strength);
                         break;
 
-                    //North
+                    // North
                     default:
-                        addHeat(row - 1, column, strength);
+                        addHeat(c.x - 1, c.y, strength);
                         break;
                 }
-                }               
             }
-        }
+        });
     }
 
     private void igniteHeatedCells() {
-        for (int row = 0; row < grid.getRows(); row++) {
-            for (int column = 0; column < grid.getColumns(); column++) {
-                if (!hasReachedIgnitionThreshold(row, column)) {
-                    continue;
-                }
+        grid.stream().parallel().filter(f -> ((hasReachedIgnitionThreshold(f.x, f.y)) &&
+                (!f.value.isBurning()))).forEach(c -> {
+                    if (!c.value.canBurn()) {
+                        heatMap.setCell(c.x, c.y, 0f);
+                    } else {
+                        // System.out.println("Ignition logic fired");
+                        int intensity = (int) Math.ceil(ignitionThreshold / 10f);
 
-                Cell cell = grid.getCell(row, column);
+                        c.value.ignite(intensity);
 
-                if (!cell.canBurn()) {
-                    heatMap.setCell(row, column, 0f);
-                    continue;
-                }
-
-                if (cell.isBurning()) {
-                    continue;
-                }
-
-                int intensity = (int) Math.ceil(ignitionThreshold / 10f);
-
-                cell.ignite(intensity);
-
-                if (cell.isBurning()) {
-                    removeHeat(row, column, ignitionThreshold);
-                }
-            }
-        }
+                        if (c.value.isBurning()) {
+                            removeHeat(c.x, c.y, ignitionThreshold);
+                        }
+                    }
+                });
     }
 
     private void updateCells() {
-        for (int row = 0; row < grid.getRows(); row++) {
-            for (int column = 0; column < grid.getColumns(); column++) {
-
-                Cell cell = grid.getCell(row, column);
-                cell.updateBurningState();
-            }
-        }
+        grid.stream().parallel().forEach(c -> {
+            c.value.updateBurningState();
+        });
     }
 
     private void spreadFires() {
-        for (int row = 0; row < grid.getRows(); row++) {
-            for (int column = 0; column < grid.getColumns(); column++) {
+        grid.stream().parallel().filter(f -> f.value.isBurning()).forEach(c -> {
+            Cell sourceCell = c.value;
 
-                Cell sourceCell = grid.getCell(row, column);
+            try {
+                int fireIntensity = sourceCell.getFire().getIntensity();
 
-                if (!sourceCell.isBurning()) {
-                    continue;
+                float spreadHeat = fireIntensity;
+                Terrain terrain = sourceCell.getTerrain();
+
+                if (terrain instanceof Vegetation) {
+                    Vegetation vegetation = (Vegetation) terrain;
+
+                    spreadHeat = vegetation.calculateSpreadHeat(fireIntensity);
                 }
 
-                try {
-                    int fireIntensity = sourceCell.getFire().getIntensity();
+                for (Grid.Position neighbour : this.grid.neighbourPositions(c.x, c.y)) {
 
-                    float spreadHeat = fireIntensity;
-                    Terrain terrain = sourceCell.getTerrain();
-
-                    if (terrain instanceof Vegetation) {
-                        Vegetation vegetation = (Vegetation) terrain;
-
-                        spreadHeat = vegetation.calculateSpreadHeat(fireIntensity);
-                    }
-
-                    for (Grid.Position neighbour : this.grid.neighbourPositions(row, column)) {
-
-                        addHeat(neighbour.getRow(), neighbour.getColumn(), spreadHeat);
-                    }
-                } catch (IllegalArgumentException e) {
-                    System.out.println("Can't burn on cell (" + row + ", " + column + ")");
+                    addHeat(neighbour.getRow(), neighbour.getColumn(), spreadHeat);
                 }
+            } catch (IllegalArgumentException e) {
+                System.out.println("Can't burn on cell (" + c.x + ", " + c.y + ")");
             }
-        }
+        });
     }
 
     private void applyRiverCooling() {
-        for (int row = 0; row < grid.getRows(); row++) {
-            for (int column = 0; column < grid.getColumns(); column++) {
+        grid.stream().parallel().filter(f -> f.value.getTerrain() instanceof River).forEach(c -> {
+            float cooling = ((River) c.value.getTerrain()).getCoolingStrength();
 
-                Cell cell = grid.getCell(row, column);
-                Terrain terrain = cell.getTerrain();
-
-                if (!(terrain instanceof River)) {
-                    continue;
-                }
-
-                River river = (River) terrain;
-                float cooling = river.getCoolingStrength();
-
-                removeHeat(row, column, cooling);
-
-                for (Grid.Position neighbour : grid.neighbourPositions(row, column)) {
-
-                    removeHeat(neighbour.getRow(), neighbour.getColumn(), cooling / 2.0f);
-                }
+            removeHeat(c.x, c.y, cooling);
+            for (Grid.Position neighbour : grid.neighbourPositions(c.x, c.y)) {
+                removeHeat(neighbour.getRow(), neighbour.getColumn(), cooling / 2.0f);
             }
-        }
+        });
     }
 
     private void evolveTerrain() {
-        for (int row = 0; row < this.grid.getRows(); row++) {
-            for (int column = 0; column < this.grid.getColumns(); column++) {
-
-                Cell cell = grid.getCell(row, column);
-
-                if (cell != null
-                        && !cell.isBurning()
-                        && cell.getTerrain() != null) {
-
-                    cell.getTerrain().update();
-                }
-            }
-        }
+        grid.stream().filter(f -> (f.value != null) &&
+                !f.value.isBurning() &&
+                (f.value.getTerrain() != null))
+                .forEach(c -> {
+                    c.value.getTerrain().update();
+                });
     }
 }

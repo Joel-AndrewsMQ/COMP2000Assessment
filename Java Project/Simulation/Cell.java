@@ -73,6 +73,7 @@ public class Cell {
             throw new IllegalStateException("Attempted to ignite a cell with no terrain.");
         fire = new Fire(intensity);
         terrain.ignite();
+        //System.out.println("Cell ignition logic fired");
     }
 
     public Fire getFire() {

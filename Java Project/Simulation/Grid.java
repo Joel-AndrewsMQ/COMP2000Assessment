@@ -1,4 +1,5 @@
 package Simulation;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -12,8 +13,7 @@ public class Grid<T> {
     public Grid(int rows, int columns) {
         if (rows <= 0 || columns <= 0) {
             throw new IllegalArgumentException(
-                "Rows and columns must be greater than zero"
-            );
+                    "Rows and columns must be greater than zero");
         }
 
         this.rows = rows;
@@ -44,9 +44,8 @@ public class Grid<T> {
     public T getCell(int row, int column) {
         if (!isInBounds(row, column)) {
             throw new IndexOutOfBoundsException(
-                "Invalid grid position: ("
-                    + row + ", " + column + ")"
-            );
+                    "Invalid grid position: ("
+                            + row + ", " + column + ")");
         }
 
         return cells.get(row).get(column);
@@ -55,9 +54,8 @@ public class Grid<T> {
     public void setCell(int row, int column, T value) {
         if (!isInBounds(row, column)) {
             throw new IndexOutOfBoundsException(
-                "Invalid grid position: ("
-                    + row + ", " + column + ")"
-            );
+                    "Invalid grid position: ("
+                            + row + ", " + column + ")");
         }
 
         cells.get(row).set(column, value);
@@ -80,9 +78,8 @@ public class Grid<T> {
 
         for (Position position : neighbourPositions(row, column)) {
             T value = getCell(
-                position.getRow(),
-                position.getColumn()
-            );
+                    position.getRow(),
+                    position.getColumn());
 
             neighbourValues.add(value);
         }
@@ -93,9 +90,8 @@ public class Grid<T> {
     public List<Position> neighbourPositions(int row, int column) {
         if (!isInBounds(row, column)) {
             throw new IndexOutOfBoundsException(
-                "Invalid grid position: ("
-                    + row + ", " + column + ")"
-            );
+                    "Invalid grid position: ("
+                            + row + ", " + column + ")");
         }
 
         List<Position> positions = new ArrayList<Position>();
@@ -136,11 +132,12 @@ public class Grid<T> {
         }
     }
 
-    public Stream<T> stream(){
-        Builder<T> builder = Stream.builder();
-        for (List<T> list : cells) {
-            for (T t : list) {
-                builder.accept(t);
+    public Stream<Coordinate<T>> stream() {
+        Builder<Coordinate<T>> builder = Stream.builder();
+        for (int i = 0; i < cells.size(); i++) {
+            List<T> row = cells.get(i);
+            for (int j = 0; j < row.size(); j++) {
+                builder.accept(new Coordinate<T>(i, j, row.get(j)));
             }
         }
         return builder.build();
