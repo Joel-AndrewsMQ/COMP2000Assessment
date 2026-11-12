@@ -1,14 +1,15 @@
 package Weather;
+
 import Simulation.ForestFireSimulation;
 
-public abstract class Weather{
+public abstract class Weather {
 
 	protected int strength;
 	protected int duration;
 	protected int[][] location;
 
-	protected Weather(int strength, int duration, int[][] location){
-		if(strength < 0 || duration < 0){
+	protected Weather(int strength, int duration, int[][] location) {
+		if (strength < 0 || duration < 0) {
 			throw new IllegalArgumentException("Strength or Duration cannot be negative");
 		}
 		this.strength = strength;
@@ -16,22 +17,23 @@ public abstract class Weather{
 		this.location = location;
 	}
 
-	public int getStrength(){
+	public int getStrength() {
 		return strength;
 	}
 
-	public int getDuration(){
+	public int getDuration() {
 		return duration;
 	}
 
-	public int[][] getLocation(){
+	public int[][] getLocation() {
 		return location;
 	}
 
-	public void decrementDuration(){
+	public void decrementDuration() {
 		duration--;
 	}
 
-	//Public so subclasses can override. Abstract so subclasses have to implement their own specific behaviour.
+	// Public so subclasses can override. Abstract so subclasses have to implement
+	// their own specific behaviour.
 	public abstract void affectSimulation(ForestFireSimulation simulation);
 }

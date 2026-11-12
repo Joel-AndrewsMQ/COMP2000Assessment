@@ -1,4 +1,5 @@
 package Simulation;
+
 import Terrain.Fire;
 import Terrain.Terrain;
 
@@ -59,9 +60,11 @@ public class Cell {
     }
 
     public void updateBurningState() {
-        if(!hasTerrain() || !hasFire()) return;
-        if(!terrain.canBurn()) return;
-        if(terrain.isBurnedOut()){
+        if (!hasTerrain() || !hasFire())
+            return;
+        if (!terrain.canBurn())
+            return;
+        if (terrain.isBurnedOut()) {
             fire = null;
             return;
         }
@@ -73,7 +76,6 @@ public class Cell {
             throw new IllegalStateException("Attempted to ignite a cell with no terrain.");
         fire = new Fire(intensity);
         terrain.ignite();
-        //System.out.println("Cell ignition logic fired");
     }
 
     public Fire getFire() {
