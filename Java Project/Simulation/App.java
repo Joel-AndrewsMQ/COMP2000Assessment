@@ -254,7 +254,7 @@ public class App {
             this.simulation.getWeatherManager().createWeather(selectedWeather, selectedDirection);
             this.statusLabel.setText("Weather applied: " + weatherDescription);
         } else {
-            this.simulation.getWeatherManager().createWeather(selectedWeather);
+            this.simulation.getWeatherManager().createWeather(selectedWeather, simulation.getRandomPositions());
             this.statusLabel.setText("Weather applied: " + weatherDescription);
         }
     }

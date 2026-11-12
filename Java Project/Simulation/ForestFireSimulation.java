@@ -131,22 +131,26 @@ public class ForestFireSimulation {
                 switch (direction) {
                     // East
                     case 1:
-                        addHeat(c.x, c.y + 1, strength);
+                        if (!(c.y + 1 > grid.getColumns()))
+                            addHeat(c.x, c.y + 1, strength);
                         break;
 
                     // South
                     case 2:
-                        addHeat(c.x + 1, c.y, strength);
+                        if (!(c.x + 1 > grid.getRows()))
+                            addHeat(c.x + 1, c.y, strength);
                         break;
 
                     // West
                     case 3:
-                        addHeat(c.x, c.y - 1, strength);
+                        if (!(c.y - 1 < 0))
+                            addHeat(c.x, c.y - 1, strength);
                         break;
 
                     // North
                     default:
-                        addHeat(c.x - 1, c.y, strength);
+                        if (!(c.x - 1 < 0))
+                            addHeat(c.x - 1, c.y, strength);
                         break;
                 }
             }
@@ -221,5 +225,15 @@ public class ForestFireSimulation {
                 .forEach(c -> {
                     c.value.getTerrain().update();
                 });
+    }
+
+    public int[][] getRandomPositions() {
+        int[][] positions = new int[(int) (Math.random()
+                * (grid.getRows() > grid.getColumns() ? grid.getRows() : grid.getColumns())) + 1][2];
+        for (int i = 0; i < positions.length; i++) {
+            positions[i][0] = ((int) (Math.random() * grid.getRows()));
+            positions[i][1] = ((int) (Math.random() * grid.getColumns()));
+        }
+        return positions;
     }
 }

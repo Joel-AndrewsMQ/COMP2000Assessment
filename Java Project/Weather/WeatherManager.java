@@ -15,18 +15,18 @@ public class WeatherManager {
         return true;
     }
 
-    public void createWeather(String weather) {
+    public void createWeather(String weather, int[][] location) {
         Weather w = null;
 
         switch (weather) {
             case "Rain":
-                w = new Rain(8, 20, null);
+                w = new Rain(8, 20, location);
                 break;
             case "Heatwave":
-                w = new Heatwave(2, 20, null);
+                w = new Heatwave(2, 20, location);
                 break;
             case "Lightning":
-                w = new Lightning(10, 1, null, 3);
+                w = new Lightning(10, 1, location, 3);
                 break;
             default:
                 break;
@@ -71,13 +71,12 @@ public class WeatherManager {
 
         while (it.hasNext()) {
             Weather w = it.next();
-            advanceDecrement(w);
-
             if (!isActive(w)) {
                 it.remove();
             } else {
                 w.affectSimulation(simulation);
             }
+            advanceDecrement(w);
         }
     }
 }
